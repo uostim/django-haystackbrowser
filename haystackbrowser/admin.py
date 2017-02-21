@@ -169,8 +169,6 @@ class HaystackResultsAdmin(object):
         try:
             # > 1.5
             from django.conf.urls import url
-            def patterns(prefix, *args):
-                return list(args)  # must be a list, not a tuple, because Django.
         except ImportError as e:
             # < 1.5
             from django.conf.urls.defaults import patterns, url
@@ -185,7 +183,7 @@ class HaystackResultsAdmin(object):
         else:
             model_key = self.model._meta.module_name
 
-        return patterns('',
+        return [
             url(regex=r'^(?P<content_type>.+)/(?P<pk>.+)/$',
                 view=wrap(self.view),
                 name='%s_%s_change' % (self.model._meta.app_label,
@@ -196,7 +194,7 @@ class HaystackResultsAdmin(object):
                 name='%s_%s_changelist' % (self.model._meta.app_label,
                                            model_key)
             ),
-        )
+        ]
     urls = property(urls)
 
     def get_results_per_page(self, request):
